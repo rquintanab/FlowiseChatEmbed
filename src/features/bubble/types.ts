@@ -70,6 +70,7 @@ export type ChatWindowTheme = {
   height?: number;
   width?: number;
   fontSize?: number;
+  fontFamily?: string;
   userMessage?: UserMessageTheme;
   botMessage?: BotMessageTheme;
   textInput?: TextInputTheme;
@@ -93,6 +94,9 @@ export type ButtonTheme = {
   right?: number;
   dragAndDrop?: boolean; // parameter to enable drag and drop(true or false)
   autoWindowOpen?: autoWindowOpenTheme;
+  showCloseButton?: boolean;
+  closeButtonBackgroundColor?: string;
+  closeButtonIconColor?: string;
 };
 
 export type ToolTipTheme = {

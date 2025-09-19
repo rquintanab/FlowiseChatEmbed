@@ -1,4 +1,5 @@
 import { Show, splitProps } from 'solid-js';
+import { DEFAULT_FONT_FAMILY } from '@/constants';
 
 export type DisclaimerPopupProps = {
   isOpen?: boolean;
@@ -15,6 +16,7 @@ export type DisclaimerPopupProps = {
   textColor?: string;
   buttonTextColor?: string;
   denyButtonBgColor?: string;
+  fontFamily?: string;
 };
 
 export const DisclaimerPopup = (props: DisclaimerPopupProps) => {
@@ -33,6 +35,7 @@ export const DisclaimerPopup = (props: DisclaimerPopupProps) => {
     'denyButtonBgColor',
     'blurredBackgroundColor',
     'backgroundColor',
+    'fontFamily',
   ]);
 
   const handleAccept = () => {
@@ -50,8 +53,12 @@ export const DisclaimerPopup = (props: DisclaimerPopupProps) => {
         style={{ background: popupProps.blurredBackgroundColor || 'rgba(0, 0, 0, 0.4)' }}
       >
         <div
-          class="p-10 rounded-lg shadow-lg max-w-md w-full text-center mx-4 font-sans"
-          style={{ background: popupProps.backgroundColor || 'white', color: popupProps.textColor || 'black' }}
+          class="p-10 rounded-lg shadow-lg max-w-md w-full text-center mx-4"
+          style={{
+            background: popupProps.backgroundColor || 'white',
+            color: popupProps.textColor || 'black',
+            'font-family': popupProps.fontFamily ?? DEFAULT_FONT_FAMILY,
+          }}
         >
           <h2 class="text-2xl font-semibold mb-4 flex justify-center items-center">{popupProps.title ?? 'Disclaimer'}</h2>
 

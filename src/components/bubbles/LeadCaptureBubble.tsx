@@ -5,6 +5,7 @@ import { addLeadQuery, LeadCaptureInput } from '@/queries/sendMessageQuery';
 import { SaveLeadButton } from '@/components/buttons/LeadCaptureButtons';
 import { Avatar } from '@/components/avatars/Avatar';
 import { getLocalStorageChatflow, setLocalStorageChatflow } from '@/utils';
+import { DEFAULT_FONT_FAMILY } from '@/constants';
 
 type Props = {
   message: MessageType;
@@ -18,6 +19,7 @@ type Props = {
   textColor?: string;
   sendButtonColor?: string;
   fontSize?: number;
+  fontFamily?: string;
   isLeadSaved: boolean;
   setIsLeadSaved: (value: boolean) => void;
   setLeadEmail: (value: string) => void;
@@ -94,6 +96,7 @@ export const LeadCaptureBubble = (props: Props) => {
           color: props.textColor ?? defaultTextColor,
           'border-radius': '6px',
           'font-size': props.fontSize ? `${props.fontSize}px` : `${defaultFontSize}px`,
+          'font-family': props.fontFamily ?? DEFAULT_FONT_FAMILY,
         }}
       >
         {props.isLeadSaved || getLocalStorageChatflow(props.chatflowid)?.lead ? (
@@ -154,7 +157,11 @@ export const LeadCaptureBubble = (props: Props) => {
                 </div>
               )}
               <div class="flex items-center justify-end gap-1">
-                <SaveLeadButton buttonColor={props.sendButtonColor} isLoading={isLeadSaving()} />
+                <SaveLeadButton
+                  buttonColor={props.sendButtonColor}
+                  isLoading={isLeadSaving()}
+                  fontFamily={props.fontFamily}
+                />
               </div>
             </div>
           </form>

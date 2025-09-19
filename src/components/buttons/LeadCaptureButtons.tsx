@@ -1,12 +1,14 @@
 import { JSX, Show } from 'solid-js';
 import { Spinner } from '@/components';
 import { SendButton } from '@/components/buttons/SendButton';
+import { DEFAULT_FONT_FAMILY } from '@/constants';
 
 type LeadCaptureButtonProps = {
   buttonColor?: string;
   isDisabled?: boolean;
   isLoading?: boolean;
   disableIcon?: boolean;
+  fontFamily?: string;
 } & JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 
 // Not being used for now, keep it for future in case we want to allow users to cancel the form
@@ -19,7 +21,12 @@ export const CancelLeadCaptureButton = (props: LeadCaptureButtonProps) => {
         'h-10 p-2 justify-center font-semibold focus:outline-none flex items-center disabled:opacity-50 disabled:cursor-not-allowed disabled:brightness-100 transition-all filter hover:brightness-90 active:brightness-75 ' +
         props.class
       }
-      style={{ background: 'transparent', border: 'none', color: props.buttonColor }}
+      style={{
+        background: 'transparent',
+        border: 'none',
+        color: props.buttonColor,
+        'font-family': props.fontFamily ?? DEFAULT_FONT_FAMILY,
+      }}
       title="Cancel Lead Capture"
     >
       Cancel
@@ -46,7 +53,7 @@ export const SaveLeadButton = (props: LeadCaptureButtonProps) => {
       {...props}
     >
       <Show when={!props.isLoading} fallback={<SaveLeadFallback />}>
-        <span style={{ 'font-family': 'Poppins, sans-serif' }}>Submit</span>
+        <span style={{ 'font-family': props.fontFamily ?? DEFAULT_FONT_FAMILY }}>Submit</span>
       </Show>
     </SendButton>
   );

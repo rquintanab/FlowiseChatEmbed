@@ -7,6 +7,7 @@ import { ImageUploadButton } from '@/components/buttons/ImageUploadButton';
 import { RecordAudioButton } from '@/components/buttons/RecordAudioButton';
 import { AttachmentUploadButton } from '@/components/buttons/AttachmentUploadButton';
 import { ChatInputHistory } from '@/utils/chatInputHistory';
+import { DEFAULT_FONT_FAMILY } from '@/constants';
 
 type TextInputProps = {
   placeholder?: string;
@@ -15,6 +16,7 @@ type TextInputProps = {
   sendButtonColor?: string;
   inputValue: string;
   fontSize?: number;
+  fontFamily?: string;
   disabled?: boolean;
   onSubmit: (value: string) => void;
   onInputChange: (value: string) => void;
@@ -46,6 +48,7 @@ export const TextInput = (props: TextInputProps) => {
   let fileUploadRef: HTMLInputElement | HTMLTextAreaElement | undefined;
   let imgUploadRef: HTMLInputElement | HTMLTextAreaElement | undefined;
   let audioRef: HTMLAudioElement | undefined;
+  const fontFamily = props.fontFamily ?? DEFAULT_FONT_FAMILY;
 
   const handleInput = (inputValue: string) => {
     const wordCount = inputValue.length;
@@ -146,6 +149,7 @@ export const TextInput = (props: TextInputProps) => {
         margin: 'auto',
         'background-color': props.backgroundColor ?? defaultBackgroundColor,
         color: props.textColor ?? defaultTextColor,
+        'font-family': fontFamily,
       }}
       onKeyDown={handleKeyDown}
     >
@@ -164,7 +168,7 @@ export const TextInput = (props: TextInputProps) => {
               isDisabled={props.disabled || isSendButtonDisabled()}
               on:click={handleImageUploadClick}
             >
-              <span style={{ 'font-family': 'Poppins, sans-serif' }}>Image Upload</span>
+              <span style={{ 'font-family': fontFamily }}>Image Upload</span>
             </ImageUploadButton>
             <input
               style={{ display: 'none' }}
@@ -189,7 +193,7 @@ export const TextInput = (props: TextInputProps) => {
               isDisabled={props.disabled || isSendButtonDisabled()}
               on:click={handleFileUploadClick}
             >
-              <span style={{ 'font-family': 'Poppins, sans-serif' }}>File Upload</span>
+              <span style={{ 'font-family': fontFamily }}>File Upload</span>
             </AttachmentUploadButton>
             <input
               style={{ display: 'none' }}
@@ -217,7 +221,7 @@ export const TextInput = (props: TextInputProps) => {
             isDisabled={props.disabled || isSendButtonDisabled()}
             on:click={props.onMicrophoneClicked}
           >
-            <span style={{ 'font-family': 'Poppins, sans-serif' }}>Record Audio</span>
+            <span style={{ 'font-family': fontFamily }}>Record Audio</span>
           </RecordAudioButton>
         ) : null}
         <SendButton
@@ -227,7 +231,7 @@ export const TextInput = (props: TextInputProps) => {
           class="m-0 h-14 flex items-center justify-center"
           on:click={submit}
         >
-          <span style={{ 'font-family': 'Poppins, sans-serif' }}>Send</span>
+          <span style={{ 'font-family': fontFamily }}>Send</span>
         </SendButton>
       </div>
     </div>

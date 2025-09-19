@@ -16,6 +16,7 @@ export const Bubble = (props: BubbleProps) => {
 
   const [isBotOpened, setIsBotOpened] = createSignal(false);
   const [isBotStarted, setIsBotStarted] = createSignal(false);
+  const [isWidgetVisible, setIsWidgetVisible] = createSignal(true);
   const [buttonPosition, setButtonPosition] = createSignal({
     bottom: bubbleProps.theme?.button?.bottom ?? 20,
     right: bubbleProps.theme?.button?.right ?? 20,
@@ -30,6 +31,12 @@ export const Bubble = (props: BubbleProps) => {
     setIsBotOpened(false);
   };
 
+  const hideWidget = () => {
+    setIsBotOpened(false);
+    setIsBotStarted(false);
+    setIsWidgetVisible(false);
+  };
+
   const toggleBot = () => {
     isBotOpened() ? closeBot() : openBot();
   };
@@ -41,6 +48,17 @@ export const Bubble = (props: BubbleProps) => {
   const buttonSize = getBubbleButtonSize(props.theme?.button?.size); // Default to 48px if size is not provided
   const buttonBottom = props.theme?.button?.bottom ?? 20;
   const chatWindowBottom = buttonBottom + buttonSize + 10; // Adjust the offset here for slight shift
+  const showCloseButton = bubbleProps.theme?.button?.showCloseButton ?? true;
+  const closeButtonBackgroundColor = bubbleProps.theme?.button?.closeButtonBackgroundColor ?? 'rgba(17, 24, 39, 0.8)';
+  const closeButtonIconColor = bubbleProps.theme?.button?.closeButtonIconColor ?? defaultIconColor;
+  const closeButtonSize = 24;
+  const closeButtonGap = 8;
+
+  const getCloseButtonBottom = () =>
+    Math.max(0, Math.min(buttonPosition().bottom + buttonSize + closeButtonGap, window.innerHeight - closeButtonSize));
+
+  const getCloseButtonRight = () =>
+    Math.max(0, Math.min(buttonPosition().right, window.innerWidth - closeButtonSize));
 
   // Add viewport meta tag dynamically
   createEffect(() => {
@@ -62,25 +80,55 @@ export const Bubble = (props: BubbleProps) => {
         <style>{props.theme?.customCSS}</style>
       </Show>
       <style>{styles}</style>
-      <Tooltip
-        showTooltip={showTooltip && !isBotOpened()}
-        position={buttonPosition()}
-        buttonSize={buttonSize}
-        tooltipMessage={bubbleProps.theme?.tooltip?.tooltipMessage}
-        tooltipBackgroundColor={bubbleProps.theme?.tooltip?.tooltipBackgroundColor}
-        tooltipTextColor={bubbleProps.theme?.tooltip?.tooltipTextColor}
-        tooltipFontSize={bubbleProps.theme?.tooltip?.tooltipFontSize} // Set the tooltip font size
-      />
-      <BubbleButton
-        {...bubbleProps.theme?.button}
-        toggleBot={toggleBot}
-        isBotOpened={isBotOpened()}
-        setButtonPosition={setButtonPosition}
-        dragAndDrop={bubbleProps.theme?.button?.dragAndDrop ?? false}
-        autoOpen={bubbleProps.theme?.button?.autoWindowOpen?.autoOpen ?? false}
-        openDelay={bubbleProps.theme?.button?.autoWindowOpen?.openDelay}
-        autoOpenOnMobile={bubbleProps.theme?.button?.autoWindowOpen?.autoOpenOnMobile ?? false}
-      />
+      <Show when={isWidgetVisible()}>
+        <Tooltip
+          showTooltip={showTooltip && !isBotOpened()}
+          position={buttonPosition()}
+          buttonSize={buttonSize}
+          tooltipMessage={bubbleProps.theme?.tooltip?.tooltipMessage}
+          tooltipBackgroundColor={bubbleProps.theme?.tooltip?.tooltipBackgroundColor}
+          tooltipTextColor={bubbleProps.theme?.tooltip?.tooltipTextColor}
+          tooltipFontSize={bubbleProps.theme?.tooltip?.tooltipFontSize} // Set the tooltip font size
+          fontFamily={bubbleProps.theme?.chatWindow?.fontFamily}
+        />
+      </Show>
+      <Show when={isWidgetVisible()}>
+        <BubbleButton
+          {...bubbleProps.theme?.button}
+          toggleBot={toggleBot}
+          isBotOpened={isBotOpened()}
+          setButtonPosition={setButtonPosition}
+          dragAndDrop={bubbleProps.theme?.button?.dragAndDrop ?? false}
+          autoOpen={bubbleProps.theme?.button?.autoWindowOpen?.autoOpen ?? false}
+          openDelay={bubbleProps.theme?.button?.autoWindowOpen?.openDelay}
+          autoOpenOnMobile={bubbleProps.theme?.button?.autoWindowOpen?.autoOpenOnMobile ?? false}
+        />
+      </Show>
+      <Show when={isWidgetVisible() && !isBotOpened() && showCloseButton}>
+        <button
+          type="button"
+          class="fixed flex items-center justify-center rounded-full shadow-md transition-transform duration-200 hover:scale-110 active:scale-95"
+          style={{
+            right: `${getCloseButtonRight()}px`,
+            bottom: `${getCloseButtonBottom()}px`,
+            width: `${closeButtonSize}px`,
+            height: `${closeButtonSize}px`,
+            'background-color': closeButtonBackgroundColor,
+            color: closeButtonIconColor,
+            'z-index': 42424242,
+          }}
+          onClick={hideWidget}
+          aria-label="Hide chat"
+          title="Hide Chat"
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16">
+            <path
+              fill={closeButtonIconColor}
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+            />
+          </svg>
+        </button>
+      </Show>
       <div
         part="bot"
         style={{
@@ -98,6 +146,7 @@ export const Bubble = (props: BubbleProps) => {
           'z-index': 42424242,
           bottom: `${Math.min(buttonPosition().bottom + buttonSize + 10, window.innerHeight - chatWindowBottom)}px`,
           right: `${Math.max(0, Math.min(buttonPosition().right, window.innerWidth - (bubbleProps.theme?.chatWindow?.width ?? 410) - 10))}px`,
+          display: isWidgetVisible() ? 'block' : 'none',
         }}
         class={
           `fixed sm:right-5 rounded-lg w-full sm:w-[400px] max-h-[704px]` +
@@ -143,6 +192,7 @@ export const Bubble = (props: BubbleProps) => {
               userMessage={bubbleProps.theme?.chatWindow?.userMessage}
               feedback={bubbleProps.theme?.chatWindow?.feedback}
               fontSize={bubbleProps.theme?.chatWindow?.fontSize}
+              fontFamily={bubbleProps.theme?.chatWindow?.fontFamily}
               footer={bubbleProps.theme?.chatWindow?.footer}
               sourceDocsTitle={bubbleProps.theme?.chatWindow?.sourceDocsTitle}
               starterPrompts={bubbleProps.theme?.chatWindow?.starterPrompts}

@@ -36,6 +36,7 @@ import { removeLocalStorageChatHistory, getLocalStorageChatflow, setLocalStorage
 import { cloneDeep } from 'lodash';
 import { FollowUpPromptBubble } from '@/components/bubbles/FollowUpPromptBubble';
 import { fetchEventSource, EventStreamContentType } from '@microsoft/fetch-event-source';
+import { DEFAULT_FONT_FAMILY } from '@/constants';
 
 export type FileEvent<T = EventTarget> = {
   target: T;
@@ -161,6 +162,7 @@ export type BotProps = {
   formBackgroundColor?: string;
   formTextColor?: string;
   fontSize?: number;
+  fontFamily?: string;
   isFullPage?: boolean;
   footer?: FooterTheme;
   sourceDocsTitle?: string;
@@ -273,11 +275,19 @@ const FeedbackDialog = (props: {
   onSubmit: () => void;
   feedbackValue: string;
   setFeedbackValue: (value: string) => void;
+  fontFamily?: string;
 }) => {
   return (
     <Show when={props.isOpen}>
       <div class="fixed inset-0 rounded-lg flex items-center justify-center backdrop-blur-sm z-50" style={{ background: 'rgba(0, 0, 0, 0.4)' }}>
-        <div class="p-6 rounded-lg shadow-lg max-w-md w-full text-center mx-4 font-sans" style={{ background: 'white', color: 'black' }}>
+        <div
+          class="p-6 rounded-lg shadow-lg max-w-md w-full text-center mx-4"
+          style={{
+            background: 'white',
+            color: 'black',
+            'font-family': props.fontFamily ?? DEFAULT_FONT_FAMILY,
+          }}
+        >
           <h2 class="text-xl font-semibold mb-4 flex justify-center items-center">Your Feedback</h2>
 
           <textarea
@@ -321,6 +331,7 @@ const FormInputView = (props: {
   textColor?: string;
   sendButtonColor?: string;
   fontSize?: number;
+  fontFamily?: string;
 }) => {
   const [formData, setFormData] = createSignal<Record<string, any>>({});
 
@@ -337,7 +348,7 @@ const FormInputView = (props: {
     <div
       class="w-full h-full flex flex-col items-center justify-center px-4 py-8 rounded-lg"
       style={{
-        'font-family': 'Poppins, sans-serif',
+        'font-family': props.fontFamily ?? DEFAULT_FONT_FAMILY,
         'font-size': props.fontSize ? `${props.fontSize}px` : '16px',
         background: props.parentBackgroundColor || defaultBackgroundColor,
         color: props.textColor || defaultTextColor,
@@ -346,7 +357,7 @@ const FormInputView = (props: {
       <div
         class="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden"
         style={{
-          'font-family': 'Poppins, sans-serif',
+          'font-family': props.fontFamily ?? DEFAULT_FONT_FAMILY,
           'font-size': props.fontSize ? `${props.fontSize}px` : '16px',
           background: props.backgroundColor || defaultBackgroundColor,
           color: props.textColor || defaultTextColor,
@@ -458,6 +469,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
   let chatContainer: HTMLDivElement | undefined;
   let bottomSpacer: HTMLDivElement | undefined;
   let botContainer: HTMLDivElement | undefined;
+  const getFontFamily = () => props.fontFamily ?? DEFAULT_FONT_FAMILY;
 
   const [userInput, setUserInput] = createSignal('');
   const [loading, setLoading] = createSignal(false);
@@ -1742,11 +1754,16 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
           textColor={props?.formTextColor || props.botMessage?.textColor}
           sendButtonColor={props.textInput?.sendButtonColor}
           fontSize={props.fontSize}
+          fontFamily={getFontFamily()}
         />
       ) : (
         <div
           ref={botContainer}
           class={'relative flex w-full h-full text-base overflow-hidden bg-cover bg-center flex-col items-center chatbot-container ' + props.class}
+          style={{
+            '--chatbot-container-font-family': getFontFamily(),
+            'font-family': getFontFamily(),
+          }}
           onDragEnter={handleDrag}
         >
           {isDragActive() && (
@@ -1805,7 +1822,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
                 class="my-2 ml-2"
                 on:click={clearChat}
               >
-                <span style={{ 'font-family': 'Poppins, sans-serif' }}>Clear</span>
+                <span style={{ 'font-family': getFontFamily() }}>Clear</span>
               </DeleteButton>
             </div>
           ) : null}
@@ -1867,6 +1884,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
                           backgroundColor={props.botMessage?.backgroundColor}
                           textColor={props.botMessage?.textColor}
                           fontSize={props.fontSize}
+                          fontFamily={getFontFamily()}
                           showAvatar={props.botMessage?.showAvatar}
                           avatarSrc={props.botMessage?.avatarSrc}
                           leadsConfig={leadsConfig()}
@@ -1959,7 +1977,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
                       </div>
                       <div class="flex items-center">
                         <CancelButton buttonColor={props.textInput?.sendButtonColor} type="button" class="m-0" on:click={onRecordingCancelled}>
-                          <span style={{ 'font-family': 'Poppins, sans-serif' }}>Send</span>
+                          <span style={{ 'font-family': getFontFamily() }}>Send</span>
                         </CancelButton>
                         <SendButton
                           sendButtonColor={props.textInput?.sendButtonColor}
@@ -1968,7 +1986,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
                           class="m-0"
                           on:click={onRecordingStopped}
                         >
-                          <span style={{ 'font-family': 'Poppins, sans-serif' }}>Send</span>
+                          <span style={{ 'font-family': getFontFamily() }}>Send</span>
                         </SendButton>
                       </div>
                     </div>
@@ -1984,6 +2002,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
                   maxCharsWarningMessage={props.textInput?.maxCharsWarningMessage}
                   autoFocus={props.textInput?.autoFocus}
                   fontSize={props.fontSize}
+                  fontFamily={getFontFamily()}
                   disabled={getInputDisabled()}
                   inputValue={userInput()}
                   onInputChange={(value) => setUserInput(value)}
@@ -2028,6 +2047,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
           denyButtonText={props.disclaimer?.denyButtonText}
           onDeny={props.closeBot}
           isFullPage={props.isFullPage}
+          fontFamily={getFontFamily()}
         />
       )}
 
@@ -2041,6 +2061,7 @@ export const Bot = (botProps: BotProps & { class?: string }) => {
           onSubmit={handleSubmitFeedback}
           feedbackValue={feedback()}
           setFeedbackValue={(value) => setFeedback(value)}
+          fontFamily={getFontFamily()}
         />
       )}
     </>
