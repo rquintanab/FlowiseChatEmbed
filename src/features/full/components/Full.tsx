@@ -80,6 +80,7 @@ export const Full = (props: FullProps, { element }: { element: HTMLElement }) =>
             userMessage={props.theme?.chatWindow?.userMessage}
             feedback={props.theme?.chatWindow?.feedback}
             fontSize={props.theme?.chatWindow?.fontSize}
+            fontFamily={props.theme?.chatWindow?.fontFamily}
             footer={props.theme?.chatWindow?.footer}
             starterPrompts={props.theme?.chatWindow?.starterPrompts}
             chatflowid={props.chatflowid}

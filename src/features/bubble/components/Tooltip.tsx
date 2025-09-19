@@ -13,6 +13,7 @@ type TooltipProps = {
   tooltipBackgroundColor?: string;
   tooltipTextColor?: string;
   tooltipFontSize?: number; // Add tooltipFontSize to props
+  fontFamily?: string;
 };
 
 const Tooltip = (props: TooltipProps) => {
@@ -52,6 +53,7 @@ const Tooltip = (props: TooltipProps) => {
           '--tooltip-background-color': backgroundColor,
           '--tooltip-text-color': textColor,
           '--tooltip-font-size': fontSize,
+          'font-family': props.fontFamily,
         }}
       >
         {formattedTooltipMessage}
